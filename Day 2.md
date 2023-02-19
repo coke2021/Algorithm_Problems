@@ -95,5 +95,33 @@ class Solution {
 ```
 
 ##### Optimal solution
+Note: + First while loop, the right pointer go first find the minimal length of numbers that sum up equal to or larger than the target.
+      - In the first while loop, there are another while loop. The left pointer keep incrementing by 1 utill the sum is less than the target. Meanwhile, the sum minus by the the number in the array which passed by the left pointer. At the same time, record the minimal length. 
 
-Note: 
+```
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int minLen = Integer.MAX_VALUE;
+        int n = nums.length;
+        //right pointer
+        int p1 = 0;
+        //left pointer
+        int p2= 0;
+        int sum = 0;
+        while(p1 < n && p2 < n){
+            sum += nums[p1];
+            while(sum >= target){
+                minLen = Math.min(minLen, p1 - p2 + 1);
+                sum -= nums[p2];
+                p2++;
+            }
+            p1++;
+        }
+        if(minLen == Integer.MAX_VALUE){
+            return 0;
+        } else {
+            return minLen;
+        }
+    }
+}
+```
