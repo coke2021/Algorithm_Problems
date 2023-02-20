@@ -1,11 +1,10 @@
 # Day 2 Leetcode problem
 
-Includes 97, 209, 59
+Includes 97, 209, 59, (904, 76)
 
 + ## Leetcode 977 Squares of a Sorted Array
 
 #### problem link: https://leetcode.com/problems/squares-of-a-sorted-array/
-Credit to: 
 
 #### Methods: 1 brutal force and 1 optimal solution
 
@@ -97,6 +96,7 @@ class Solution {
 ##### Optimal solution
 Note: + First while loop, the right pointer go first find the minimal length of numbers that sum up equal to or larger than the target.
       - In the first while loop, there are another while loop. The left pointer keep incrementing by 1 utill the sum is less than the target. Meanwhile, the sum minus by the the number in the array which passed by the left pointer. At the same time, record the minimal length. 
+      * sliding window technique where two pointers are used to maintain a subarray and the subarray is expanded or contracted based on the sum.
 
 ```
 class Solution {
@@ -122,6 +122,113 @@ class Solution {
         } else {
             return minLen;
         }
+    }
+}
+```
+
++ ## Leetcode 59 Spiral Matrix II
+
+#### problem link: https://leetcode.com/problems/spiral-matrix-ii/
+
+#### Methods: 1 normal solution and 1 optimal solution
+
+##### normal solution:
+
+Note: Traverse through the 2d array with not same rule. Easy to make mistakes.
+
+```
+class Solution {
+    public int[][] generateMatrix(int n) {
+        if(n == 1){
+            int[][] res = new int[1][1];
+            res[0][0] = 1;
+            return res;
+        }
+        int[][] res = new int[n][n];
+        int num = 1;
+        int rowStart = 0;
+        int rowEnd = n - 1;
+        int colStart = 0;
+        int colEnd = n - 1;
+        int count = 0;
+        while (count < n * n) {
+            for (int j = colStart; j <= colEnd; j++) {
+                res[rowStart][j] = num++;
+                count++;
+            }
+            rowStart++;
+            for (int i = rowStart; i <= rowEnd; i++) {
+                res[i][colEnd] = num++;
+                count++;
+            }
+            colEnd--;    
+            for (int j = colEnd; j >= colStart; j--) {
+                    res[rowEnd][j] = num++;
+                    count++;
+            }
+                rowEnd--;
+            for (int i = rowEnd; i >= rowStart; i--) {
+                    res[i][colStart] = num++;
+                    count++;
+            }
+                colStart++;
+        }
+        return res;
+        
+    }
+}
+```
+
+
+##### optimal solution:
+
+Note: Fixed rule along four side! Traverse through the 2d array with same and fixed rule. To fill the array by 4 sides. In each side, it starts at first element and ends at the element before the last element. So, it left the last element in the the four inner for loops.
+
+```
+class Solution {
+    public int[][] generateMatrix(int n) {
+        if(n == 1){
+            int[][] res = new int[1][1];
+            res[0][0] = 1;
+            return res;
+        }
+        //result 2d array
+        int[][] res = new int[n][n];
+        //number elements filled
+        int num = 1;
+        //start position for each loop
+        int startRow = 0;
+        int startCol = 0;
+        // offset control the length of each side 
+        int offset = 1;
+        // last element in odd matrix
+        if(n % 2 == 1){
+            res[n/2][n/2] = n * n;
+        }
+        int counter = 0;
+        int j;
+        int i;
+        
+        while (counter < n/2) {
+            for (j = startCol; j < n - offset; j++) {
+                res[startRow][j] = num++;
+            }
+            for (i = startRow; i < n - offset; i++) {
+                res[i][j] = num++;
+            }
+            
+            for (; j > startCol; j--) {
+                    res[i][j] = num++;
+            }
+            for (; i > startRow; i--) {
+                    res[i][startCol] = num++;
+            }
+            startRow++;
+            startCol++;
+            offset++;
+            counter++;
+        }
+        return res;
     }
 }
 ```
