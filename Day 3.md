@@ -1,7 +1,7 @@
 # Day 3 Leetcode problem
-Includes 203, 707, 206
+Includes 203, 707, 26
 
-+ ## Leetcode 977 Squares of a Sorted Array
++ ## Leetcode 203 Remove Linked List Elements
 
 #### problem link: https://leetcode.com/problems/remove-linked-list-elements/submissions/901892468/
 
@@ -120,11 +120,294 @@ class Solution {
 }
 ```
 
-+ ## Leetcode 707 Squares of a Sorted Array
++ ## Leetcode 707 Design Linked List
 
-#### problem link: https://leetcode.com/problems/remove-linked-list-elements/submissions/901892468/
+#### problem link: https://leetcode.com/problems/design-linked-list/
 
-#### Methods: 1 unified method and 1 ununified method
+#### Methods: 2 method
 
-##### ununified method:
+##### method 1: singly-linked list
+
+Note: Be careful to point the added ListNode to the next listNode before make the listNode and the left(before) point the next to the new added listNode. Careful about the steps.
+```
+//singly-linked list
+public class ListNode {
+    int val;
+    ListNode next;
+    ListNode(){}
+    ListNode(int val){
+        this.val = val;
+    }
+    ListNode(int val, ListNode next){
+        this.val = val;
+        this.next = next;
+    }
+}
+
+class MyLinkedList {
+    int size;
+    ListNode dummyHead;
+
+    public MyLinkedList() {
+        size = 0;
+        //dummy head initialization
+        dummyHead = new ListNode(-1);
+    }
+    
+    public int get(int index) {
+        if(index < 0 || index > size - 1){
+            return -1;
+        }
+        ListNode currentNode = dummyHead;
+        for(int i = 0; i <= index; i++){
+            currentNode = currentNode.next;
+        }
+        return currentNode.val;
+    }
+    
+    public void addAtHead(int val) {
+        addAtIndex(0, val);
+    }
+    
+    public void addAtTail(int val) {
+        addAtIndex(size, val);
+    }
+    
+    public void addAtIndex(int index, int val) {
+        if(index > size){
+            return;
+        } else if (index < 0){
+            index = 0;
+        }
+        size++;
+        ListNode toAdd = new ListNode(val);
+        //find preceding element
+        ListNode pred = dummyHead;
+        for(int i = 0; i < index; i++){
+            pred = pred.next;
+        }
+        toAdd.next = pred.next;
+        pred.next = toAdd;
+    }
+    
+    public void deleteAtIndex(int index) {
+        if(index < 0 && index > size - 1){
+            return;
+        }
+        size--;
+        ListNode pred = dummyHead;
+        for(int i = 0; i < index; i++){
+            pred = pred.next;
+        }
+        pred.next = pred.next.next;
+    }
+}
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList obj = new MyLinkedList();
+ * int param_1 = obj.get(index);
+ * obj.addAtHead(val);
+ * obj.addAtTail(val);
+ * obj.addAtIndex(index,val);
+ * obj.deleteAtIndex(index);
+ */
+```
+
+##### method 2: double linked list
+
+```
+//doublly-linked list
+public class ListNode {
+    int val;
+    ListNode next;
+    ListNode prev;
+    ListNode(){}
+    ListNode(int val){
+        this.val = val;
+    }
+    ListNode(int val, ListNode next, ListNode prev){
+        this.val = val;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+
+class MyLinkedList {
+    int size;
+    ListNode dummyhead, dummytail;
+
+    public MyLinkedList() {
+        this.size = 0;
+        //dummy head & tail initialization
+        this.dummyhead = new ListNode(-1);
+        this.dummytail = new ListNode(-1);
+        dummyhead.next = dummytail;
+        dummytail.prev = dummyhead;
+    }
+    
+    public int get(int index) {
+        if(index < 0 || index >= size){
+            return -1;
+        }
+        ListNode currentNode = dummyhead;
+        if(index < size / 2){
+            for(int i = 0; i <= index; i++){
+                currentNode = currentNode.next;
+            }
+        } else {
+            currentNode = dummytail;
+            for(int i = size - 1; i >= size - index; i--){
+                currentNode = currentNode.prev;
+            }
+        }
+        return currentNode.val;
+    }
+    
+    public void addAtHead(int val) {
+        addAtIndex(0, val);
+    }
+    
+    public void addAtTail(int val) {
+        addAtIndex(size, val);
+    }
+    
+    public void addAtIndex(int index, int val) {
+        if(index > size){
+            return;
+        } else if (index < 0){
+            index = 0;
+        }
+        size++;
+        ListNode toAdd = new ListNode(val);
+        //find preceding element
+        ListNode pred = dummyhead;
+        for(int i = 0; i < index; i++){
+            pred = pred.next;
+        }
+        toAdd.next = pred.next;
+        toAdd.prev = pred;
+        pred.next.prev = toAdd;
+        pred.next = toAdd;
+    }
+    
+    public void deleteAtIndex(int index) {
+        if(index < 0 && index > size - 1){
+            return;
+        }
+        if(index < size / 2){
+            ListNode pred = dummyhead;
+            for(int i = 0; i < index; i++){
+                pred = pred.next;
+            }
+            pred.next.next.prev = pred;
+            pred.next = pred.next.next;
+            size--;
+        } else {
+            ListNode pred = dummytail;
+            for(int i = size - 1; i >= size - index; i--){
+                pred = pred.prev;
+            }
+            pred.prev = pred.prev.prev;
+            pred.prev.prev.next = pred;
+            size--;
+        }
+        
+    }
+}
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList obj = new MyLinkedList();
+ * int param_1 = obj.get(index);
+ * obj.addAtHead(val);
+ * obj.addAtTail(val);
+ * obj.addAtIndex(index,val);
+ * obj.deleteAtIndex(index);
+ */
+```
+
++ ## Leetcode 206: Reverse Linked List
+
+#### problem link: [https://leetcode.com/problems/design-linked-list/](https://leetcode.com/problems/reverse-linked-list/description/)
+
+#### Methods: 2 method
+
+##### method 1: brtual force
+
+Note: use arraylist record every node values in linked list then build another new reversed linked list.
+
+```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        List<Integer> values = new ArrayList<>();
+        ListNode currentNode = head;
+        while(currentNode != null){
+            values.add(currentNode.val);
+            currentNode = currentNode.next;
+        }
+        int size = values.size();
+        ListNode newNode = new ListNode(values.get(size - 1));
+        currentNode = newNode;
+        for(int i = 0; i < size - 1; i++){
+            currentNode.next = new ListNode(values.get(size - 2 - i));
+            currentNode = currentNode.next;
+        }
+        /* another delicate way
+        ListNode newHead = new ListNode(values.get(values.size() - 1));
+        ListNode curr = newHead;
+        for (int i = values.size() - 2; i >= 0; i--) {
+            ListNode newNode = new ListNode(values.get(i));
+            curr.next = newNode;
+            curr = curr.next;
+        }
+        */
+        return newNode;
+    }
+}
+```
+
+##### method 2: double pointers
+
+Note: use TEMP to record the value missed. pre set to NULL(do not use new ListNode(), set to 0 otherwise)
+
+```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        //two pointers
+        ListNode pre = null;
+        ListNode cur = head;
+        while(cur != null){
+            //temp recorder
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+}
 ```
