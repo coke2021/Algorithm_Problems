@@ -411,3 +411,43 @@ class Solution {
     }
 }
 ```
+
+##### method 3: recursive function
+
+Note: understand two pointers first. it is based on that. It automatically updates the previous list node and current list node by recusive functions.
+
+```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        return reverse(null, head);
+    }
+
+    //recusion function
+    private ListNode reverse(ListNode prev, ListNode cur){
+        if(cur == null){
+            // it is the brake for this recursive function, do not return NULL(wrong).
+            return prev;
+        }
+        // temp recorder
+        ListNode next = null;
+        next = cur.next;
+        // point for reverse
+        cur.next = prev;
+        // update prev、cur position
+        // prev = cur;
+        // cur = next;
+        return reverse(cur, next);
+    }
+}
+```
+
